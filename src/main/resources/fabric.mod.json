@@ -22,7 +22,6 @@
     "meteor-client:color": "225,25,25"
   },
   "mixins": [
-    "vicore-extractor.mixins.json"
   ],
   "depends": {
     "java": ">=21",
