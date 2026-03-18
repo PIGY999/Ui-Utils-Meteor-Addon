@@ -77,7 +77,8 @@ public class VanishDetector extends Module {
             "Andregar37",
             "drastiko",
             "MrJadyel",
-            "Edusthetic"
+            "Edusthetic",
+            "Hosve"
         ))
         .build()
     );
@@ -205,8 +206,10 @@ public class VanishDetector extends Module {
     private long lastRequestTimeMs = 0;
     private final Set<String> lastVanished = new HashSet<>();
     private final Set<String> lastVisible = new HashSet<>();
+    private final Map<String, String> lastVisibleDisplay = new HashMap<>();
     private final List<String> currentVisibleDisplay = new ArrayList<>();
     private final List<String> currentVanishedDisplay = new ArrayList<>();
+    private final Set<String> currentVanishedKeys = new HashSet<>();
     private final Map<String, Long> suggestedTargetsSeen = new HashMap<>();
     private int targetRequestIndex = 0;
     private String lastRequestedTargetKey;
@@ -236,6 +239,7 @@ public class VanishDetector extends Module {
         lastJoinLeaveAlert.clear();
         currentVisibleDisplay.clear();
         currentVanishedDisplay.clear();
+        currentVanishedKeys.clear();
         suggestedTargetsSeen.clear();
         targetRequestIndex = 0;
         lastRequestedTargetKey = null;
@@ -246,6 +250,7 @@ public class VanishDetector extends Module {
         recentAdmins.clear();
         recentAdminsDisplay.clear();
         currentRecentDisplay.clear();
+        lastVisibleDisplay.clear();
     }
 
     @EventHandler
@@ -433,11 +438,15 @@ public class VanishDetector extends Module {
 
         currentVanishedDisplay.clear();
         currentVanishedDisplay.addAll(buildDisplayList(vanished, suggestionNames));
+        currentVanishedKeys.clear();
+        currentVanishedKeys.addAll(vanished);
     }
 
     private void updateVanishedDisplay(Set<String> vanished, Map<String, String> suggestionNames) {
         currentVanishedDisplay.clear();
         currentVanishedDisplay.addAll(buildDisplayList(vanished, suggestionNames));
+        currentVanishedKeys.clear();
+        currentVanishedKeys.addAll(vanished);
     }
 
     private void updateVisibleFromTab() {
@@ -456,6 +465,8 @@ public class VanishDetector extends Module {
 
         currentVisibleDisplay.clear();
         currentVisibleDisplay.addAll(buildDisplayList(currentVisible, tabDisplay));
+        lastVisibleDisplay.clear();
+        lastVisibleDisplay.putAll(tabDisplay);
 
         if (notifyVisibleOnline.get()) {
             Set<String> visibleAdded = new HashSet<>(currentVisible);
@@ -478,8 +489,9 @@ public class VanishDetector extends Module {
             Set<String> justLeft = new HashSet<>(lastVisible);
             justLeft.removeAll(currentVisible);
             justLeft.removeAll(lastVanished);
+            justLeft.removeAll(currentVanishedKeys);
             for (String nameKey : justLeft) {
-                String display = tabDisplay.getOrDefault(nameKey, nameKey);
+                String display = lastVisibleDisplay.getOrDefault(nameKey, nameKey);
                 recordRecentAdmin(display);
             }
         }
