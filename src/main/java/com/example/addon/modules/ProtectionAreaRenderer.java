@@ -140,31 +140,35 @@ public class ProtectionAreaRenderer extends Module {
 
                     Block block = mc.world.getBlockState(pos).getBlock();
                     if (block == Blocks.RAW_COPPER_BLOCK && pos.getY() > RAW_COPPER_MIN_Y) {
-                        addArea(pos, 15, rawCopperColor.get());
+                        addArea(pos, sideToRadius(15), rawCopperColor.get());
                     } else if (block == Blocks.LIME_GLAZED_TERRACOTTA) {
-                        addArea(pos, 50, limeGlazedColor.get());
+                        addArea(pos, sideToRadius(50), limeGlazedColor.get());
                     } else if (block == Blocks.NETHER_WART_BLOCK) {
-                        addArea(pos, 100, netherWartColor.get());
+                        addArea(pos, sideToRadius(100), netherWartColor.get());
                     } else if (block == Blocks.DIAMOND_ORE && pos.getY() > DIAMOND_MIN_Y) {
-                        addArea(pos, 160, diamondOreColor.get());
+                        addArea(pos, sideToRadius(160), diamondOreColor.get());
                     } else if (block == Blocks.BUDDING_AMETHYST && pos.getY() > BUDDING_MIN_Y) {
-                        addArea(pos, 250, buddingAmethystColor.get());
+                        addArea(pos, sideToRadius(250), buddingAmethystColor.get());
                     }
                 }
             }
         }
     }
 
-    private void addArea(BlockPos pos, int radius, Color color) {
+    private void addArea(BlockPos pos, double radius, Color color) {
         areas.add(new ProtectionArea(pos.toImmutable(), radius, color));
+    }
+
+    private static double sideToRadius(int sideLength) {
+        return (sideLength - 1) / 2.0;
     }
 
     private static class ProtectionArea {
         private final BlockPos center;
-        private final int radius;
+        private final double radius;
         private final Color color;
 
-        private ProtectionArea(BlockPos center, int radius, Color color) {
+        private ProtectionArea(BlockPos center, double radius, Color color) {
             this.center = center;
             this.radius = radius;
             this.color = color;
