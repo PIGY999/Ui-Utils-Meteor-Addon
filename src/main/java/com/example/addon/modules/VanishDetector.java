@@ -210,6 +210,7 @@ public class VanishDetector extends Module {
     private final Map<String, Long> suggestedTargetsSeen = new HashMap<>();
     private int targetRequestIndex = 0;
     private String lastRequestedTargetKey;
+    private String lastRequestedAutocompletePrefix;
     private final Map<String, Long> hotAdmins = new HashMap<>();
     private final Map<String, String> hotAdminsDisplay = new HashMap<>();
     private final Map<String, Integer> hotAdminBanCounts = new HashMap<>();
@@ -267,11 +268,13 @@ public class VanishDetector extends Module {
                 String target = targets.get().get(targetRequestIndex % targets.get().size());
                 targetRequestIndex++;
                 lastRequestedTargetKey = normalize(target);
-                mc.getNetworkHandler().sendPacket(new RequestCommandCompletionsC2SPacket(lastRequestId, "/msg " + target));
+                lastRequestedAutocompletePrefix = getAutocompletePrefix(target);
+                mc.getNetworkHandler().sendPacket(new RequestCommandCompletionsC2SPacket(lastRequestId, "/msg " + lastRequestedAutocompletePrefix));
             }
         } else {
             lastRequestId++;
             lastRequestedTargetKey = null;
+            lastRequestedAutocompletePrefix = null;
             mc.getNetworkHandler().sendPacket(new RequestCommandCompletionsC2SPacket(lastRequestId, "/msg "));
         }
     }
@@ -347,10 +350,13 @@ public class VanishDetector extends Module {
 
     private void handlePerTargetSuggestions(Suggestions suggestions) {
         long now = System.currentTimeMillis();
-        if (lastRequestedTargetKey != null) {
+        if (lastRequestedTargetKey != null && lastRequestedAutocompletePrefix != null) {
             boolean found = false;
             for (Suggestion suggestion : suggestions.getList()) {
-                if (normalize(suggestion.getText()).equals(lastRequestedTargetKey)) {
+                String suggestionText = suggestion.getText();
+                // The suggestion should be the target name (which starts with our autocomplete prefix)
+                if (normalize(suggestionText).equals(lastRequestedTargetKey) ||
+                    normalize(suggestionText).startsWith(lastRequestedAutocompletePrefix.toLowerCase(Locale.ROOT))) {
                     found = true;
                     break;
                 }
@@ -600,5 +606,15 @@ public class VanishDetector extends Module {
 
     private static String normalize(String name) {
         return name.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns the autocomplete prefix for a target name.
+     * This is the full name except the last letter.
+     * For "Notch", returns "Notc" so that "/msg Notc" autocompletes to "Notch".
+     */
+    private static String getAutocompletePrefix(String name) {
+        if (name == null || name.length() <= 1) return name;
+        return name.substring(0, name.length() - 1);
     }
 }
