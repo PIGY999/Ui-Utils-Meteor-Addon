@@ -38,6 +38,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new VanishDetector());
         Modules.get().add(new LegitMiddleClick());
         Modules.get().add(new LegitChestSwap());
+        Modules.get().add(new ProtectionAreaRenderer());
 
 
 
