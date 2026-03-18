@@ -31,7 +31,7 @@ public class AddonTemplate extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing AppleAddon...");
+        LOG.info("Initializing DiosesMC Addon...");
 
         // Registro de Módulos
         Modules.get().add(new VanishDetector());
@@ -59,11 +59,11 @@ public class AddonTemplate extends MeteorAddon {
 
     public static final Text PREFIX = Text.empty()
         .append(Text.literal("[").formatted(Formatting.WHITE))
-        .append(Text.literal("AppleAddon").formatted(Formatting.AQUA))
+        .append(Text.literal("DiosesMC Addon").formatted(Formatting.AQUA))
         .append(Text.literal("] ").formatted(Formatting.WHITE));
 
     public static File GetConfigFile(String key, String filename) {
-        return new File(new File(new File(new File(MeteorClient.FOLDER, "AppleAddon"), key), Utils.getFileWorldName()), filename);
+        return new File(new File(new File(new File(MeteorClient.FOLDER, "DiosesMC Addon"), key), Utils.getFileWorldName()), filename);
     }
 
     @Override
