@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "addon-template",
   "version": "${version}",
-  "name": "AppleUtils Beta",
-  "description": "An addon template for Meteor Client addons.",
+  "name": "DiosesMC Addon",
+  "description": "An addon to cheat on DiosesMC.",
   "authors": [
-    "_PIGY_"
+    "_PIGY_","Raphiel"
   ],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
