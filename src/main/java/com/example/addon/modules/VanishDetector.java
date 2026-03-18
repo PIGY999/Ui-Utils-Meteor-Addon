@@ -243,14 +243,10 @@ public class VanishDetector extends Module {
         suggestedTargetsSeen.clear();
         targetRequestIndex = 0;
         lastRequestedTargetKey = null;
-        hotAdmins.clear();
-        hotAdminsDisplay.clear();
-        hotAdminBanCounts.clear();
-        currentHotDisplay.clear();
-        recentAdmins.clear();
-        recentAdminsDisplay.clear();
-        currentRecentDisplay.clear();
         lastVisibleDisplay.clear();
+
+        cleanupHotAdmins();
+        cleanupRecentAdmins();
     }
 
     @EventHandler
@@ -486,6 +482,18 @@ public class VanishDetector extends Module {
         }
 
         if (recentAdminsEnabled.get()) {
+            boolean recentChanged = false;
+            var recentIt = recentAdmins.keySet().iterator();
+            while (recentIt.hasNext()) {
+                String key = recentIt.next();
+                if (currentVisible.contains(key) || currentVanishedKeys.contains(key)) {
+                    recentIt.remove();
+                    recentAdminsDisplay.remove(key);
+                    recentChanged = true;
+                }
+            }
+            if (recentChanged) rebuildRecentDisplay();
+
             Set<String> justLeft = new HashSet<>(lastVisible);
             justLeft.removeAll(currentVisible);
             justLeft.removeAll(lastVanished);
