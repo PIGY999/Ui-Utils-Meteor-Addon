@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "addon-template",
+  "version": "${version}",
+  "name": "AppleUtils Beta",
+  "description": "An addon template for Meteor Client addons.",
+  "authors": [
+    "_PIGY_"
+  ],
+  "contact": {
+    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+  },
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.example.addon.AddonTemplate"
+
+    ]
+  },
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "mixins": [
+    "vicore-extractor.mixins.json"
+  ],
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}"],
+    "meteor-client": "*"
+  }
+}
