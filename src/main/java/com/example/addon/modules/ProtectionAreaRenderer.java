@@ -4,6 +4,7 @@ import com.example.addon.AddonTemplate;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -69,6 +70,20 @@ public class ProtectionAreaRenderer extends Module {
         .build()
     );
 
+    private final Setting<Boolean> renderBlockOutline = sgRender.add(new BoolSetting.Builder()
+        .name("render-block-outline")
+        .description("Render an outline on the protection block itself.")
+        .defaultValue(true)
+        .build()
+    );
+
+    private final Setting<Boolean> renderAreaFilled = sgRender.add(new BoolSetting.Builder()
+        .name("render-area-filled")
+        .description("Render full boxes (lines + fill) for protection areas.")
+        .defaultValue(false)
+        .build()
+    );
+
     private final Setting<SettingColor> limeGlazedColor = sgRender.add(new ColorSetting.Builder()
         .name("lime-glazed-color")
         .description("Render color for lime glazed terracotta protections (50x50).")
@@ -127,7 +142,12 @@ public class ProtectionAreaRenderer extends Module {
 
         for (ProtectionArea area : areas) {
             Box box = new Box(area.center).expand(area.radius, 0, area.radius);
-            event.renderer.box(box, area.color, area.color, ShapeMode.Lines, 0);
+            ShapeMode shapeMode = renderAreaFilled.get() ? ShapeMode.Both : ShapeMode.Lines;
+            event.renderer.box(box, area.color, area.color, shapeMode, 0);
+            if (renderBlockOutline.get()) {
+                Box blockBox = new Box(area.center);
+                event.renderer.box(blockBox, area.color, area.color, ShapeMode.Lines, 0);
+            }
         }
     }
 
