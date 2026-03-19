@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProtectionAreaRenderer extends Module {
-    private static final int DIAMOND_MIN_Y = 17;
-    private static final int BUDDING_MIN_Y = 55;
     private static final int RAW_COPPER_MIN_Y = 55;
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -52,6 +50,15 @@ public class ProtectionAreaRenderer extends Module {
         .defaultValue(20)
         .min(5)
         .sliderMax(200)
+        .build()
+    );
+
+    private final Setting<Integer> isolationRadius = sgGeneral.add(new IntSetting.Builder()
+        .name("isolation-radius")
+        .description("Blocks of the same type within this radius will not count as protections.")
+        .defaultValue(8)
+        .min(5)
+        .sliderMax(10)
         .build()
     );
 
@@ -139,20 +146,40 @@ public class ProtectionAreaRenderer extends Module {
                     if (!mc.world.isInBuildLimit(pos)) continue;
 
                     Block block = mc.world.getBlockState(pos).getBlock();
-                    if (block == Blocks.RAW_COPPER_BLOCK && pos.getY() > RAW_COPPER_MIN_Y) {
+                    if (block == Blocks.RAW_COPPER_BLOCK && pos.getY() > RAW_COPPER_MIN_Y
+                        && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(15), rawCopperColor.get());
-                    } else if (block == Blocks.LIME_GLAZED_TERRACOTTA) {
+                    } else if (block == Blocks.LIME_GLAZED_TERRACOTTA
+                        && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(50), limeGlazedColor.get());
-                    } else if (block == Blocks.NETHER_WART_BLOCK) {
+                    } else if (block == Blocks.NETHER_WART_BLOCK
+                        && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(100), netherWartColor.get());
-                    } else if (block == Blocks.DIAMOND_ORE && pos.getY() > DIAMOND_MIN_Y) {
+                    } else if (block == Blocks.DIAMOND_ORE
+                        && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(160), diamondOreColor.get());
-                    } else if (block == Blocks.BUDDING_AMETHYST && pos.getY() > BUDDING_MIN_Y) {
+                    } else if (block == Blocks.BUDDING_AMETHYST
+                        && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(250), buddingAmethystColor.get());
                     }
                 }
             }
         }
+    }
+
+    private boolean isIsolated(Block block, BlockPos pos, int radius) {
+        BlockPos.Mutable checkPos = new BlockPos.Mutable();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
+                    checkPos.set(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz);
+                    if (!mc.world.isInBuildLimit(checkPos)) continue;
+                    if (mc.world.getBlockState(checkPos).getBlock() == block) return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void addArea(BlockPos pos, double radius, Color color) {
