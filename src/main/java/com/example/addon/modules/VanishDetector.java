@@ -82,7 +82,8 @@ public class VanishDetector extends Module {
             "zMazon",
             "Beykih",
             "zM4TZ3L",
-            "xDec0de_"
+            "xDec0de_",
+            "vourzeur"
         ))
         .build()
     );
