@@ -6,6 +6,7 @@ import com.example.addon.commands.MoveCommand;
 import com.example.addon.commands.CenterCommand;
 import com.example.addon.commands.CommandExample;
 import com.example.addon.commands.ClanMembersCommand;
+import com.example.addon.commands.GetAllClansCommand;
 import com.example.addon.hud.AdminVanishHud;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -53,6 +54,7 @@ public class AddonTemplate extends MeteorAddon {
         Commands.add(new CenterCommand());
         Commands.add(new CommandExample());
         Commands.add(new ClanMembersCommand());
+        Commands.add(new GetAllClansCommand());
         Hud.get().register(AdminVanishHud.INFO);
 
     }
