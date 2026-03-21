@@ -42,6 +42,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new LegitChestSwap());
         Modules.get().add(new ProtectionAreaRenderer());
         Modules.get().add(new HuntStorageEsp());
+        Modules.get().add(new GetAllRanksModule());
 
 
 
