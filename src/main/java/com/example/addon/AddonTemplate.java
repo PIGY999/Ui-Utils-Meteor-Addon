@@ -44,6 +44,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new ProtectionAreaRenderer());
         Modules.get().add(new HuntStorageEsp());
         Modules.get().add(new GetAllRanksModule());
+        Modules.get().add(new AutoVclip());
         Modules.get().add(new SyncClicker());
 
 
