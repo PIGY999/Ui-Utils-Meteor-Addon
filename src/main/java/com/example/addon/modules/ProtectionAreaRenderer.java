@@ -176,6 +176,7 @@ public class ProtectionAreaRenderer extends Module {
                         && isIsolated(block, pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(100), netherWartColor.get());
                     } else if (block == Blocks.DIAMOND_ORE
+                        && (pos.getY() < 0 || pos.getY() >= 8)
                         && isIsolatedDiamond(pos, isolationRadius.get())) {
                         addArea(pos, sideToRadius(160), diamondOreColor.get());
                     } else if (block == Blocks.BUDDING_AMETHYST
