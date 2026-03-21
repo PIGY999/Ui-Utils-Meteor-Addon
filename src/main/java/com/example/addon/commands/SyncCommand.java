@@ -33,13 +33,20 @@ public class SyncCommand extends Command {
     private void executeCommand(int clientId) {
         BlockPos closestSign = null;
         double closestDist = Double.MAX_VALUE;
+        BlockPos playerPos = mc.player.getBlockPos();
 
-        for (BlockEntity blockEntity : mc.world.blockEntities) {
-            if (blockEntity instanceof SignBlockEntity) {
-                double dist = mc.player.squaredDistanceTo(blockEntity.getPos().toCenterPos());
-                if (dist <= 16.0 && dist < closestDist) {
-                    closestDist = dist;
-                    closestSign = blockEntity.getPos();
+        for (int x = -4; x <= 4; x++) {
+            for (int y = -4; y <= 4; y++) {
+                for (int z = -4; z <= 4; z++) {
+                    BlockPos pos = playerPos.add(x, y, z);
+                    BlockEntity blockEntity = mc.world.getBlockEntity(pos);
+                    if (blockEntity instanceof SignBlockEntity) {
+                        double dist = mc.player.squaredDistanceTo(pos.toCenterPos());
+                        if (dist <= 16.0 && dist < closestDist) {
+                            closestDist = dist;
+                            closestSign = pos;
+                        }
+                    }
                 }
             }
         }

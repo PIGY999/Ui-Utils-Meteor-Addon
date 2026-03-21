@@ -9,6 +9,8 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 
+import net.minecraft.screen.slot.SlotActionType;
+
 public class SyncClicker extends Module {
     public SyncClicker() {
         super(Categories.Misc, "sync-clicker", "Synchronized clicking for multiple instances.");
@@ -38,7 +40,7 @@ public class SyncClicker extends Module {
                 }
 
                 if (chestTarget != -1) {
-                    InvUtils.quickMove().slotId(chestTarget);
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, chestTarget, 0, SlotActionType.QUICK_MOVE, mc.player);
                 }
 
                 // Reset states safely
