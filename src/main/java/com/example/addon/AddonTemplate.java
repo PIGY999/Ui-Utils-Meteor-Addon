@@ -8,6 +8,7 @@ import com.example.addon.commands.CommandExample;
 import com.example.addon.commands.GetClanMembersCommand;
 import com.example.addon.commands.GetAllClansCommand;
 import com.example.addon.commands.GetAllRanksCommand;
+import com.example.addon.commands.SyncCommand;
 import com.example.addon.hud.AdminVanishHud;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -43,6 +44,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new ProtectionAreaRenderer());
         Modules.get().add(new HuntStorageEsp());
         Modules.get().add(new GetAllRanksModule());
+        Modules.get().add(new SyncClicker());
 
 
 
@@ -58,6 +60,7 @@ public class AddonTemplate extends MeteorAddon {
         Commands.add(new GetClanMembersCommand());
         Commands.add(new GetAllClansCommand());
         Commands.add(new GetAllRanksCommand());
+        Commands.add(new SyncCommand());  // Registers .ready
         Hud.get().register(AdminVanishHud.INFO);
 
     }
