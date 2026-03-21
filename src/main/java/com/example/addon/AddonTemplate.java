@@ -5,7 +5,7 @@ import com.example.addon.commands.WaitCommand;
 import com.example.addon.commands.MoveCommand;
 import com.example.addon.commands.CenterCommand;
 import com.example.addon.commands.CommandExample;
-import com.example.addon.commands.ClanMembersCommand;
+import com.example.addon.commands.GetClanMembersCommand;
 import com.example.addon.commands.GetAllClansCommand;
 import com.example.addon.commands.GetAllRanksCommand;
 import com.example.addon.hud.AdminVanishHud;
@@ -54,7 +54,7 @@ public class AddonTemplate extends MeteorAddon {
         Commands.add(new MoveCommand());
         Commands.add(new CenterCommand());
         Commands.add(new CommandExample());
-        Commands.add(new ClanMembersCommand());
+        Commands.add(new GetClanMembersCommand());
         Commands.add(new GetAllClansCommand());
         Commands.add(new GetAllRanksCommand());
         Hud.get().register(AdminVanishHud.INFO);
