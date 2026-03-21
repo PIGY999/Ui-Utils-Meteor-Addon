@@ -62,34 +62,48 @@ public class SyncCommand extends Command {
         // Simplified polling for the example
         new Thread(() -> {
             try {
-                Thread.sleep(250); // Wait for GUI
-                if (mc.player.currentScreenHandler != mc.player.playerScreenHandler) {
-                    ScreenHandler handler = mc.player.currentScreenHandler;
-                    boolean hasChest = false;
-                    for (int i = 0; i < handler.slots.size(); i++) {
-                        if (handler.getSlot(i).getStack().getItem() == Items.CHEST) {
-                            hasChest = true;
-                            break;
+                ChatUtils.info("Waiting for GUI and Chest to load...");
+                long startTime = System.currentTimeMillis();
+                long timeout = 5000; // 5 seconds timeout
+                boolean foundChest = false;
+
+                while (System.currentTimeMillis() - startTime < timeout) {
+                    if (mc.player.currentScreenHandler != mc.player.playerScreenHandler) {
+                        ScreenHandler handler = mc.player.currentScreenHandler;
+                        for (int i = 0; i < handler.slots.size(); i++) {
+                            if (handler.getSlot(i).getStack().getItem() == Items.CHEST) {
+                                foundChest = true;
+                                break;
+                            }
+                        }
+
+                        if (foundChest) {
+                            ChatUtils.info("Found chest! Reading state.");
+                            SyncManager.SyncState state = SyncManager.readState();
+                            if (clientId == 1) state.client1_ready = true;
+                            else state.client2_ready = true;
+
+                            if (state.client1_ready && state.client2_ready) {
+                                state.execute_timestamp = System.currentTimeMillis() + 5000; // 5000ms delay for sync
+                                ChatUtils.info("BOTH READY! Generated timestamp (5s).");
+                            } else {
+                                ChatUtils.info("Ready. Waiting for other client...");
+                            }
+                            
+                            state.completed = false;
+                            SyncManager.writeState(state);
+                            break; // Exit the loop since we found it
                         }
                     }
-
-                    if (hasChest) {
-                        SyncManager.SyncState state = SyncManager.readState();
-                        if (clientId == 1) state.client1_ready = true;
-                        else state.client2_ready = true;
-
-                        if (state.client1_ready && state.client2_ready) {
-                            state.execute_timestamp = System.currentTimeMillis() + 500;
-                        }
-                        
-                        state.completed = false;
-                        SyncManager.writeState(state);
-                        ChatUtils.info("Client marked as ready.");
-                    } else {
-                        ChatUtils.info("No chest found in container.");
-                    }
+                    Thread.sleep(100); // Check every 100ms
                 }
-            } catch (Exception e) {}
+
+                if (!foundChest) {
+                    ChatUtils.info("Timed out (5s) waiting for GUI or Chest to load.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 }
