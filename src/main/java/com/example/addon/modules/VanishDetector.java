@@ -83,7 +83,8 @@ public class VanishDetector extends Module {
             "Beykih",
             "zM4TZ3L",
             "xDec0de_",
-            "vourzeur"
+            "vourzeur",
+            "kevinbel16l"
         ))
         .build()
     );
