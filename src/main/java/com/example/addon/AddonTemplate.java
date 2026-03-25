@@ -128,20 +128,27 @@ public class AddonTemplate extends MeteorAddon {
                 screenContainer = iscreen.meteor_ui_utils$getScreenContainer();
             }
 
-            WButton clientSideClose = window.add(theme.button("Client-Side Close")).expandX().widget();
+            WButton clientSideClose = window.add(theme.button("Close without packet")).expandX().widget();
             clientSideClose.action = () -> mc.setScreen(null);
 
-            WButton serverSideClose = window.add(theme.button("Server-Side Close")).expandX().widget();
+            WButton serverSideClose = window.add(theme.button("De-sync")).expandX().widget();
             serverSideClose.action = () -> {
                 mc.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
             };
 
-            WButton sendPackets = window.add(theme.button("Prevent Packets")).expandX().widget();
-            sendPackets.action = () -> shouldPreventPackets = !shouldPreventPackets;
+            WButton sendPackets = window.add(theme.button("Send packets: " + (!shouldPreventPackets))).expandX().widget();
+            sendPackets.action = () -> {
+                shouldPreventPackets = !shouldPreventPackets;
+                sendPackets.set("Send packets: " + (!shouldPreventPackets));
+            };
 
-            WButton delayPackets = window.add(theme.button("Delay Packets")).expandX().widget();
+            WButton delayPackets = window.add(theme.button("Delay packets: " + shouldDelayPackets)).expandX().widget();
             delayPackets.action = () -> {
-                if (!shouldDelayPackets && !DELAYED_PACKETS.isEmpty()) {
+                boolean wasDelaying = shouldDelayPackets;
+                shouldDelayPackets = !shouldDelayPackets;
+                delayPackets.set("Delay packets: " + shouldDelayPackets);
+
+                if (wasDelaying && !shouldDelayPackets && !DELAYED_PACKETS.isEmpty()) {
                     for (var packet : DELAYED_PACKETS) {
                         mc.getNetworkHandler().sendPacket(packet);
                     }
@@ -150,7 +157,7 @@ public class AddonTemplate extends MeteorAddon {
                 }
             };
 
-            WButton disconnect = window.add(theme.button("Disconnect")).expandX().widget();
+            WButton disconnect = window.add(theme.button("Disconnect and send packets")).expandX().widget();
             disconnect.action = () -> {
                 if (!DELAYED_PACKETS.isEmpty()) {
                     shouldDelayPackets = false;
@@ -163,7 +170,7 @@ public class AddonTemplate extends MeteorAddon {
 
 
             WButton load = theme.button("Load");
-            WButton save = window.add(theme.button("Save")).expandX().widget();
+            WButton save = window.add(theme.button("Save GUI")).expandX().widget();
             save.action = () -> {
                 load.visible = true;
                 storedScreen = screen;
@@ -192,11 +199,11 @@ public class AddonTemplate extends MeteorAddon {
                 mc.keyboard.setClipboard(String.valueOf(mc.player.currentScreenHandler.getRevision()));
             };
 
-            WButton openClickSlot = window.add(theme.button("Click Slot Packet")).expandX().widget();
-            WButton openButtonClick = window.add(theme.button("Button Click Packet")).expandX().widget();
+            WButton openFabricate = window.add(theme.button("Fabricate packet")).expandX().widget();
 
             final WWindow clickSlotWindow;
             final WWindow buttonClickWindow;
+            final WWindow fabricateWindow;
             if (screenContainer != null) {
                 clickSlotWindow = screenContainer.add(theme.window("Click Slot Packet")).widget();
                 clickSlotWindow.minWidth = 260;
@@ -205,9 +212,26 @@ public class AddonTemplate extends MeteorAddon {
                 buttonClickWindow = screenContainer.add(theme.window("Button Click Packet")).widget();
                 buttonClickWindow.minWidth = 260;
                 buttonClickWindow.visible = false;
+
+                fabricateWindow = screenContainer.add(theme.window("Fabricate packet")).widget();
+                fabricateWindow.minWidth = 200;
+                fabricateWindow.visible = false;
             } else {
                 clickSlotWindow = null;
                 buttonClickWindow = null;
+                fabricateWindow = null;
+            }
+
+            if (fabricateWindow != null) {
+                WButton openClickSlot = fabricateWindow.add(theme.button("Click Slot")).expandX().widget();
+                WButton openButtonClick = fabricateWindow.add(theme.button("Button Click")).expandX().widget();
+
+                openClickSlot.action = () -> {
+                    if (clickSlotWindow != null) clickSlotWindow.visible = !clickSlotWindow.visible;
+                };
+                openButtonClick.action = () -> {
+                    if (buttonClickWindow != null) buttonClickWindow.visible = !buttonClickWindow.visible;
+                };
             }
 
             if (clickSlotWindow != null) {
@@ -298,11 +322,8 @@ public class AddonTemplate extends MeteorAddon {
                 };
             }
 
-            if (clickSlotWindow != null) {
-                openClickSlot.action = () -> clickSlotWindow.visible = !clickSlotWindow.visible;
-            }
-            if (buttonClickWindow != null) {
-                openButtonClick.action = () -> buttonClickWindow.visible = !buttonClickWindow.visible;
+            if (fabricateWindow != null) {
+                openFabricate.action = () -> fabricateWindow.visible = !fabricateWindow.visible;
             }
         });
 
