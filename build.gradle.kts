@@ -27,6 +27,9 @@ dependencies {
 
     // Meteor
     modImplementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
+
+    // Fabric API (for keybinding + client tick events)
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"] as String}")
 }
 
 tasks {

@@ -33,6 +33,10 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SleepingChatScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -48,6 +52,7 @@ import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -68,6 +73,7 @@ public class AddonTemplate extends MeteorAddon {
     private Screen storedScreen = null;
     private ScreenHandler storedScreenHandler = null;
     private int bypassPacketSends = 0;
+    private KeyBinding restoreScreenKey;
 
     @Override
     public void onInitialize() {
@@ -100,6 +106,17 @@ public class AddonTemplate extends MeteorAddon {
         Commands.add(new GetAllRanksCommand());
         Commands.add(new SyncCommand());  // Registers .ready
         Hud.get().register(AdminVanishHud.INFO);
+
+        restoreScreenKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("Restore Screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "UI-Utils"));
+        ClientTickEvents.END_CLIENT_TICK.register((client) -> {
+            if (!UiUtilsModule.isEnabled()) return;
+            while (restoreScreenKey.wasPressed()) {
+                if (storedScreen != null && storedScreenHandler != null && client.player != null) {
+                    client.setScreen(storedScreen);
+                    client.player.currentScreenHandler = storedScreenHandler;
+                }
+            }
+        });
 
         OverlayContainer.hookWindow(SleepingChatScreen.class, "Sleeping Chat", (theme, window, screen) -> {
             WButton button = window.add(theme.button("Client Wake Up")).expandX().widget();
@@ -168,23 +185,11 @@ public class AddonTemplate extends MeteorAddon {
                 }
             };
 
-
-            WButton load = theme.button("Load");
             WButton save = window.add(theme.button("Save GUI")).expandX().widget();
             save.action = () -> {
-                load.visible = true;
                 storedScreen = screen;
                 storedScreenHandler = mc.player.currentScreenHandler;
             };
-
-            load.visible = false;
-            load.action = () -> {
-                if (storedScreen != null && storedScreenHandler != null) {
-                    mc.setScreen(storedScreen);
-                    mc.player.currentScreenHandler = storedScreenHandler;
-                }
-            };
-            window.add(load).expandX();
 
             window.add(theme.label("Sync ID: " + mc.player.currentScreenHandler.syncId));
             window.add(theme.label("Revision: " + mc.player.currentScreenHandler.getRevision()));
