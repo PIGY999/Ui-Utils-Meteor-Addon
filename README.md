@@ -1,24 +1,49 @@
-# DiosesMC Addon
+# UI-Utils Meteor Addon
+Addon para Meteor Client que agrega utilidades de depuracion y control de GUI inspiradas en UI-Utils.
 
-Un addon codeado expresamente para incrementar el sufrimiento de Papaseca
+## Requisitos
+- Minecraft (Fabric) + Fabric API
+- Meteor Client (addon cargado)
 
-## Features
+## Como usar
+- Activa el modulo `ui-utils` dentro de Meteor.
+- Abre cualquier inventario o contenedor. Apareceran botones y un campo de texto sobre la GUI.
+- Funciona en inventarios/containers, lectern, edicion de carteles y el chat de dormir.
 
-### Commands
+## Funcionalidad
+- **Close without packet**: cierra la GUI sin enviar `CloseHandledScreenC2SPacket` al servidor.
+- **De-sync**: cierra la GUI solo del lado del servidor y mantiene la pantalla abierta en el cliente.
+- **Send packets: true/false**: permite o bloquea `ClickSlotC2SPacket` y `ButtonClickC2SPacket`.
+- **Delay packets: true/false**: guarda los paquetes de click y los envia todos al desactivar.
+- **Save GUI**: guarda la GUI actual para restaurarla luego.
+- **Disconnect and send packets**: envia los paquetes almacenados y desconecta al cliente.
+- **Sync ID** y **Revision**: valores internos visibles en pantalla.
+- **Copy Sync ID / Copy Revision**: copia valores al portapapeles.
+- **Copy GUI Title JSON**: copia el titulo de la GUI en formato JSON.
+- **Fabricate packet**: crea y envia paquetes `ClickSlotC2SPacket` o `ButtonClickC2SPacket`.
+- **Chat box**: cuadro de texto para escribir en chat o ejecutar comandos sin cerrar la GUI.
+- **Sign Edit**: boton "Clientside Close" que cierra la GUI y evita el siguiente `UpdateSignC2SPacket`.
+- **Sleeping Chat**: boton "Client Wake Up" para despertar al cliente sin esperar al servidor.
 
-- `center`: Centers the player on the current block. Optional direction parameter sets yaw.
-- `example`: Sends a message.
-- `move`: Moves the player in a direction for a specified time.
-- `wait`: Waits for a specified time before executing a command.
-- `getallclans`: Gets all clan information from `/clans` pages and writes it to JSON.
-- `getallranks`: Gets all ranked player names from the tablist and writes them to JSON.
-- `getclanmembers`: Parses clan members from `/clan info <clanName>` GUI.
+## Restaurar GUI guardada
+Despues de usar **Save GUI**, puedes restaurar la GUI cuando no hay pantalla abierta:
+- Tecla por defecto: `V`
 
-### Modules
+## Tutorial rapido: Fabricate packet
+### Click Slot Packet
+1. Abre **Fabricate packet** -> **Click Slot**.
+2. Rellena `Sync Id` y `Revision` con los valores que ves en la GUI.
+3. Define `Slot`, `Button` y `Action`.
+4. Opcional: marca **Delay** y ajusta **Times to send**.
+5. Pulsa **Send**.
 
-- `hunt-storage-esp`: Highlights previously opened storage containers. Requires StorageESP.
-- `legit-chest-swap`: Visibly swaps between chestplate and elytra.
-- `legit-middle-click`: Perform various actions when you middle click.
-- `world-origin`: Highlights the center of the world (example module).
-- `protection-area-render`: Renders protection boundaries from protection blocks.
-- `vanish-detector`: Detects vanished players via `/msg` suggestions.
+### Button Click Packet
+1. Abre **Fabricate packet** -> **Button Click**.
+2. Rellena `Sync Id` con el valor de la GUI.
+3. Define `Button Id`.
+4. Opcional: marca **Delay** y ajusta **Times to send**.
+5. Pulsa **Send**.
+
+## Notas
+- La interfaz de "Fabricate packet" puede fallar en macOS.
+- Algunas pantallas pueden comportarse distinto segun el servidor/mods instalados.
