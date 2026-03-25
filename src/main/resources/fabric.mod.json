@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "ui-utils-addon",
   "version": "${version}",
-  "name": "DiosesMC Addon",
-  "description": "An addon to cheat on DiosesMC.",
+  "name": "UI-Utils Addon",
+  "description": "UI-Utils standalone addon.",
   "authors": [
     "_PIGY_","Raphiel"
   ],

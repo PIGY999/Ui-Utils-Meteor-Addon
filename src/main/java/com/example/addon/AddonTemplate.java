@@ -1,41 +1,27 @@
 package com.example.addon;
 
-import com.example.addon.modules.*;
-import com.example.addon.commands.WaitCommand;
-import com.example.addon.commands.MoveCommand;
-import com.example.addon.commands.CenterCommand;
-import com.example.addon.commands.CommandExample;
-import com.example.addon.commands.GetClanMembersCommand;
-import com.example.addon.commands.GetAllClansCommand;
-import com.example.addon.commands.GetAllRanksCommand;
-import com.example.addon.commands.SyncCommand;
-import com.example.addon.hud.AdminVanishHud;
+import com.example.addon.modules.UiUtilsModule;
 import com.example.addon.uiutils.OverlayContainer;
 import com.example.addon.uiutils.ScreenContainer;
-import com.example.addon.modules.UiUtilsModule;
+import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import com.google.gson.Gson;
-import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
-import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
 import meteordevelopment.meteorclient.gui.widgets.input.WDropdown;
 import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
-import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
-import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.systems.hud.Hud;
-import meteordevelopment.meteorclient.systems.hud.HudGroup;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.screen.Screen;
@@ -49,15 +35,13 @@ import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +49,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class AddonTemplate extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("DiosesMC");
-    public static final HudGroup HUD_GROUP = new HudGroup("DiosesMC HUD");
+    public static final Category CATEGORY = new Category("UI-Utils");
 
     private static final List<Packet<?>> DELAYED_PACKETS = new ArrayList<>();
     private boolean cancelNextSignPacket = false;
@@ -79,35 +62,10 @@ public class AddonTemplate extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing DiosesMC Addon...");
+        LOG.info("Initializing UI-Utils Addon...");
 
-        // Registro de Módulos
-        Modules.get().add(new VanishDetector());
-        Modules.get().add(new LegitMiddleClick());
-        Modules.get().add(new LegitChestSwap());
-        Modules.get().add(new ProtectionAreaRenderer());
-        Modules.get().add(new HuntStorageEsp());
-        Modules.get().add(new GetAllRanksModule());
-        Modules.get().add(new AutoVclip());
-        Modules.get().add(new SyncClicker());
         Modules.get().add(new UiUtilsModule());
-
-
-
-
-        // SUSCRIPCIÓN CRÍTICA: Esto permite que el método onTick de abajo funcione
         MeteorClient.EVENT_BUS.subscribe(this);
-
-        // Comandos y HUD
-        Commands.add(new WaitCommand());
-        Commands.add(new MoveCommand());
-        Commands.add(new CenterCommand());
-        Commands.add(new CommandExample());
-        Commands.add(new GetClanMembersCommand());
-        Commands.add(new GetAllClansCommand());
-        Commands.add(new GetAllRanksCommand());
-        Commands.add(new SyncCommand());  // Registers .ready
-        Hud.get().register(AdminVanishHud.INFO);
 
         OverlayContainer.hookWindow(SleepingChatScreen.class, "Sleeping Chat", (theme, window, screen) -> {
             WButton button = window.add(theme.button("Client Wake Up")).expandX().widget();
@@ -346,9 +304,7 @@ public class AddonTemplate extends MeteorAddon {
                 }
                 chatBox.set("");
             };
-
         });
-
     }
 
     private void sendFabricatedPacket(Packet<?> packet, boolean delay) {
@@ -388,25 +344,12 @@ public class AddonTemplate extends MeteorAddon {
         }
 
         boolean down = Input.isKeyPressed(GLFW.GLFW_KEY_V);
-        if (down && !restoreKeyWasDown && storedScreen != null && storedScreenHandler != null && mc.player != null) {
+        if (down && !restoreKeyWasDown && storedScreen != null && storedScreenHandler != null && mc.player != null && mc.currentScreen == null) {
             mc.setScreen(storedScreen);
             mc.player.currentScreenHandler = storedScreenHandler;
         }
 
         restoreKeyWasDown = down;
-    }
-
-
-
-    // --- Utilidades del Addon ---
-
-    public static final Text PREFIX = Text.empty()
-        .append(Text.literal("[").formatted(Formatting.WHITE))
-        .append(Text.literal("DiosesMC Addon").formatted(Formatting.AQUA))
-        .append(Text.literal("] ").formatted(Formatting.WHITE));
-
-    public static File GetConfigFile(String key, String filename) {
-        return new File(new File(new File(new File(MeteorClient.FOLDER, "DiosesMC Addon"), key), Utils.getFileWorldName()), filename);
     }
 
     @Override
