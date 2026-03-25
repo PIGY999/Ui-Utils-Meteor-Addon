@@ -1,5 +1,6 @@
 package com.example.addon.modules;
 
+import com.example.addon.AddonTemplate;
 import com.example.addon.utils.SyncManager;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -16,7 +17,7 @@ public class SyncClicker extends Module {
     private long lastExecutedTimestamp = 0;
 
     public SyncClicker() {
-        super(Categories.Misc, "sync-clicker", "Synchronized clicking for multiple instances.");
+        super(AddonTemplate.CATEGORY, "sync-clicker", "Synchronized clicking for multiple instances.");
     }
 
     @EventHandler
@@ -25,8 +26,8 @@ public class SyncClicker extends Module {
 
         SyncManager.SyncState state = SyncManager.readState();
         if (state.client1_ready && state.client2_ready && !state.completed && state.execute_timestamp > 0) {
-            
-            // Prevent double firing inside the same client 
+
+            // Prevent double firing inside the same client
             if (state.execute_timestamp == lastExecutedTimestamp) return;
 
             long currentTime = System.currentTimeMillis();

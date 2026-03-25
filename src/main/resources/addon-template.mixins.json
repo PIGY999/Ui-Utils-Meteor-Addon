@@ -3,7 +3,13 @@
   "package": "com.example.addon.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "AbstractSignEditScreenMixin",
+    "GameRendererMixin",
+    "HandledScreenMixin",
+    "LecternScreenMixin",
+    "ScreenMixin",
+    "SleepingChatScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
