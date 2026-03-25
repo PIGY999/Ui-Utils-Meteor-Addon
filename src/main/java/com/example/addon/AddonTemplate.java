@@ -16,6 +16,8 @@ import com.example.addon.modules.UiUtilsModule;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import com.google.gson.Gson;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
@@ -25,6 +27,7 @@ import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.widgets.input.WDropdown;
 import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
+import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -49,6 +52,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -161,6 +165,12 @@ public class AddonTemplate extends MeteorAddon {
                 }
             };
 
+            WButton save = window.add(theme.button("Save GUI")).expandX().widget();
+            save.action = () -> {
+                storedScreen = screen;
+                storedScreenHandler = mc.player.currentScreenHandler;
+            };
+
             WButton disconnect = window.add(theme.button("Disconnect and send packets")).expandX().widget();
             disconnect.action = () -> {
                 if (!DELAYED_PACKETS.isEmpty()) {
@@ -170,12 +180,6 @@ public class AddonTemplate extends MeteorAddon {
                     mc.getNetworkHandler().getConnection().disconnect(Text.literal("Disconnected [%s packets sent]".formatted(DELAYED_PACKETS.size())));
                     DELAYED_PACKETS.clear();
                 }
-            };
-
-            WButton save = window.add(theme.button("Save GUI")).expandX().widget();
-            save.action = () -> {
-                storedScreen = screen;
-                storedScreenHandler = mc.player.currentScreenHandler;
             };
 
             window.add(theme.label("Sync ID: " + mc.player.currentScreenHandler.syncId));
@@ -189,6 +193,17 @@ public class AddonTemplate extends MeteorAddon {
             WButton copyRevision = window.add(theme.button("Copy Revision")).expandX().widget();
             copyRevision.action = () -> {
                 mc.keyboard.setClipboard(String.valueOf(mc.player.currentScreenHandler.getRevision()));
+            };
+
+            WButton copyTitleJson = window.add(theme.button("Copy GUI Title JSON")).expandX().widget();
+            copyTitleJson.action = () -> {
+                try {
+                    if (mc.currentScreen == null) throw new IllegalStateException("Current screen is null");
+                    String json = new Gson().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, mc.currentScreen.getTitle()).getOrThrow());
+                    mc.keyboard.setClipboard(json);
+                } catch (Exception e) {
+                    LOG.warn("Failed to copy GUI title JSON", e);
+                }
             };
 
             WButton openFabricate = window.add(theme.button("Fabricate packet")).expandX().widget();
@@ -317,6 +332,21 @@ public class AddonTemplate extends MeteorAddon {
             if (fabricateWindow != null) {
                 openFabricate.action = () -> fabricateWindow.visible = !fabricateWindow.visible;
             }
+
+            WTextBox chatBox = window.add(theme.textBox("", "Chat ...")).expandX().widget();
+            chatBox.actionOnUnfocused = () -> {
+                if (mc.getNetworkHandler() == null) return;
+                String text = chatBox.get();
+                if (text == null || text.isBlank()) return;
+
+                if (text.startsWith("/")) {
+                    mc.getNetworkHandler().sendChatCommand(text.substring(1));
+                } else {
+                    mc.getNetworkHandler().sendChatMessage(text);
+                }
+                chatBox.set("");
+            };
+
         });
 
     }

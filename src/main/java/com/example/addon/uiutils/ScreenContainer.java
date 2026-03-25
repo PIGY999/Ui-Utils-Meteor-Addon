@@ -172,6 +172,8 @@ public abstract class ScreenContainer {
         if (!UiUtilsModule.isEnabled()) return false;
         if (locked) return false;
 
+        if (isInventoryKeyPress(keyCode, scanCode) && isAnyTextBoxFocused()) return true;
+
         if (root.keyPressed(keyCode, modifiers)) return true;
 
         // Select next text box if TAB was pressed
@@ -319,6 +321,20 @@ public abstract class ScreenContainer {
         if (widget instanceof WContainer) {
             for (Cell<?> cell : ((WContainer) widget).cells) loopWidgets(cell.widget(), action);
         }
+    }
+
+    private boolean isAnyTextBoxFocused() {
+        AtomicBoolean focused = new AtomicBoolean(false);
+        loopWidgets(root, widget -> {
+            if (!focused.get() && widget instanceof WTextBox textBox && textBox.isFocused()) {
+                focused.set(true);
+            }
+        });
+        return focused.get();
+    }
+
+    private boolean isInventoryKeyPress(int keyCode, int scanCode) {
+        return mc.options != null && mc.options.inventoryKey.matchesKey(keyCode, scanCode);
     }
 
     protected void onClosed() {}

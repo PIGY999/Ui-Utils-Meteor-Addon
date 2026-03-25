@@ -7,6 +7,7 @@
     "AbstractSignEditScreenMixin",
     "GameRendererMixin",
     "HandledScreenMixin",
+    "KeyboardMixin",
     "LecternScreenMixin",
     "ScreenMixin",
     "SleepingChatScreenMixin"
