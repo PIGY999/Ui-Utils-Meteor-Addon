@@ -5,16 +5,16 @@
   "name": "UI-Utils Addon",
   "description": "UI-Utils standalone addon.",
   "authors": [
-    "_PIGY_","Raphiel"
+    "_PIGY_"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "repo": "https://github.com/PIGY999/Ui-Utils-Meteor-Addon"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/ui_utils_addon/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.AddonTemplate"
+      "com.example.addon.UIUtils"
 
     ]
   },
@@ -22,7 +22,7 @@
     "meteor-client:color": "225,25,25"
   },
   "mixins": [
-    "addon-template.mixins.json"
+    "ui-utils-addon.mixins.json"
   ],
   "depends": {
     "java": ">=21",
