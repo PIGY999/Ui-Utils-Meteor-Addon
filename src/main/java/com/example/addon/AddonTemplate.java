@@ -22,6 +22,7 @@ import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
+import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.widgets.input.WDropdown;
 import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
 import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
@@ -32,11 +33,8 @@ import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.orbit.EventHandler;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SleepingChatScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -73,7 +71,7 @@ public class AddonTemplate extends MeteorAddon {
     private Screen storedScreen = null;
     private ScreenHandler storedScreenHandler = null;
     private int bypassPacketSends = 0;
-    private KeyBinding restoreScreenKey;
+    private boolean restoreKeyWasDown = false;
 
     @Override
     public void onInitialize() {
@@ -106,17 +104,6 @@ public class AddonTemplate extends MeteorAddon {
         Commands.add(new GetAllRanksCommand());
         Commands.add(new SyncCommand());  // Registers .ready
         Hud.get().register(AdminVanishHud.INFO);
-
-        restoreScreenKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("Restore Screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "UI-Utils"));
-        ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-            if (!UiUtilsModule.isEnabled()) return;
-            while (restoreScreenKey.wasPressed()) {
-                if (storedScreen != null && storedScreenHandler != null && client.player != null) {
-                    client.setScreen(storedScreen);
-                    client.player.currentScreenHandler = storedScreenHandler;
-                }
-            }
-        });
 
         OverlayContainer.hookWindow(SleepingChatScreen.class, "Sleeping Chat", (theme, window, screen) -> {
             WButton button = window.add(theme.button("Client Wake Up")).expandX().widget();
@@ -361,6 +348,22 @@ public class AddonTemplate extends MeteorAddon {
             DELAYED_PACKETS.add(send.packet);
             send.cancel();
         }
+    }
+
+    @EventHandler
+    private void onTick(TickEvent.Post event) {
+        if (!UiUtilsModule.isEnabled()) {
+            restoreKeyWasDown = false;
+            return;
+        }
+
+        boolean down = Input.isKeyPressed(GLFW.GLFW_KEY_V);
+        if (down && !restoreKeyWasDown && storedScreen != null && storedScreenHandler != null && mc.player != null) {
+            mc.setScreen(storedScreen);
+            mc.player.currentScreenHandler = storedScreenHandler;
+        }
+
+        restoreKeyWasDown = down;
     }
 
 
