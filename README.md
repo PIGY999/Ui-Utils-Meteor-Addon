@@ -10,7 +10,6 @@ Meteor Client addon that brings UI-Utils style GUI debugging and control tools.
 - Open any inventory or container. A set of buttons and a text field will appear on top of the GUI.
 - Works on inventories/containers and lectern screens.
 
-## Interface overview
 ![UI-Utils main panel](docs/images/ui-utils-panel.png)
 
 ## Features
@@ -31,22 +30,26 @@ After using **Save GUI**, you can restore it while no screen is open:
 - Default key: `V`
 
 ## Quick tutorial: Fabricate packet
+`ClickSlotC2SPacket` and `ButtonClickC2SPacket` are the two packet types this addon can craft.
+
+When clicking **Fabricate packet** you should see this window:
+
 ![Fabricate packet menu](docs/images/fabricate-packet-menu.png)
 
 ### Click Slot Packet
 1. Open **Fabricate packet** -> **Click Slot**.
+
+![Click Slot Packet builder](docs/images/click-slot-packet.png)
 2. Fill `Sync Id` and `Revision` with the values shown in the GUI.
 3. Set `Slot`, `Button`, and `Action`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
 
-![Click Slot Packet builder](docs/images/click-slot-packet.png)
-
 ### Button Click Packet
 1. Open **Fabricate packet** -> **Button Click**.
+
+![Button Click Packet builder](docs/images/button-click-packet.png)
 2. Fill `Sync Id` with the value shown in the GUI.
 3. Set `Button Id`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
-
-![Button Click Packet builder](docs/images/button-click-packet.png)
