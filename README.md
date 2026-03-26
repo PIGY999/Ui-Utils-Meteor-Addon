@@ -23,6 +23,19 @@ Meteor Client addon that brings UI-Utils style GUI debugging and control tools.
 - **Fabricate packet**: build and send `ClickSlotC2SPacket` or `ButtonClickC2SPacket`.
 - **Chat box**: type chat or run commands without closing the GUI.
 
+## Screenshots
+UI-Utils main panel:
+![UI-Utils main panel](docs/images/ui-utils-panel.png)
+
+Fabricate packet menu:
+![Fabricate packet menu](docs/images/fabricate-packet-menu.png)
+
+Click Slot Packet builder:
+![Click Slot Packet builder](docs/images/click-slot-packet.png)
+
+Button Click Packet builder:
+![Button Click Packet builder](docs/images/button-click-packet.png)
+
 ## Restore saved GUI
 After using **Save GUI**, you can restore it while no screen is open:
 - Default key: `V`
