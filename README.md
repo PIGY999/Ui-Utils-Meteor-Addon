@@ -11,7 +11,6 @@ Meteor Client addon that brings UI-Utils style GUI debugging and control tools.
 - Works on inventories/containers and lectern screens.
 
 ## Interface overview
-Main UI panel with the core controls and quick actions:
 ![UI-Utils main panel](docs/images/ui-utils-panel.png)
 
 ## Features
@@ -32,7 +31,6 @@ After using **Save GUI**, you can restore it while no screen is open:
 - Default key: `V`
 
 ## Quick tutorial: Fabricate packet
-Select the packet type you want to craft:
 ![Fabricate packet menu](docs/images/fabricate-packet-menu.png)
 
 ### Click Slot Packet
@@ -41,6 +39,7 @@ Select the packet type you want to craft:
 3. Set `Slot`, `Button`, and `Action`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
+6. 
 ![Click Slot Packet builder](docs/images/click-slot-packet.png)
 
 ### Button Click Packet
@@ -49,4 +48,5 @@ Select the packet type you want to craft:
 3. Set `Button Id`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
+6. 
 ![Button Click Packet builder](docs/images/button-click-packet.png)
