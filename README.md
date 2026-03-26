@@ -39,7 +39,7 @@ After using **Save GUI**, you can restore it while no screen is open:
 3. Set `Slot`, `Button`, and `Action`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
-6. 
+
 ![Click Slot Packet builder](docs/images/click-slot-packet.png)
 
 ### Button Click Packet
@@ -48,5 +48,5 @@ After using **Save GUI**, you can restore it while no screen is open:
 3. Set `Button Id`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
-6. 
+
 ![Button Click Packet builder](docs/images/button-click-packet.png)
