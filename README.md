@@ -9,8 +9,9 @@ Meteor Client addon that brings UI-Utils style GUI debugging and control tools.
 - Enable the `ui-utils` module in Meteor.
 - Open any inventory or container. A set of buttons and a text field will appear on top of the GUI.
 - Works on inventories/containers and lectern screens.
-
-![UI-Utils main panel](docs/images/ui-utils-panel.png)
+<p align="center">
+  <img src="docs/images/ui-utils-panel.png" alt="UI-Utils main panel" width="320">
+</p>
 
 ## Features
 - **Close without packet**: closes the GUI without sending `CloseHandledScreenC2SPacket` to the server.
@@ -33,8 +34,9 @@ After using **Save GUI**, you can restore it while no screen is open:
 `ClickSlotC2SPacket` and `ButtonClickC2SPacket` are the two packet types this addon can craft.
 
 When clicking **Fabricate packet** you should see this window:
-
-![Fabricate packet menu](docs/images/fabricate-packet-menu.png)
+<p align="center">
+  <img src="docs/images/fabricate-packet-menu.png" alt="Fabricate packet menu" width="260">
+</p>
 
 ### Click Slot Packet
 1. Open **Fabricate packet** -> **Click Slot**.
