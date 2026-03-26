@@ -37,16 +37,20 @@ When clicking **Fabricate packet** you should see this window:
 ![Fabricate packet menu](docs/images/fabricate-packet-menu.png)
 
 ### Click Slot Packet
+<p align="center">
+  <img src="docs/images/click-slot-packet.png" alt="Click Slot Packet builder" width="320">
+</p>
 1. Open **Fabricate packet** -> **Click Slot**.
-   <img src="docs/images/click-slot-packet.png" alt="Click Slot Packet builder" width="320">
 2. Fill `Sync Id` and `Revision` with the values shown in the GUI.
 3. Set `Slot`, `Button`, and `Action`.
 4. Optional: enable **Delay** and adjust **Times to send**.
 5. Click **Send**.
 
 ### Button Click Packet
+<p align="center">
+  <img src="docs/images/button-click-packet.png" alt="Button Click Packet builder" width="320">
+</p>
 1. Open **Fabricate packet** -> **Button Click**.
-   <img src="docs/images/button-click-packet.png" alt="Button Click Packet builder" width="320">
 2. Fill `Sync Id` with the value shown in the GUI.
 3. Set `Button Id`.
 4. Optional: enable **Delay** and adjust **Times to send**.
