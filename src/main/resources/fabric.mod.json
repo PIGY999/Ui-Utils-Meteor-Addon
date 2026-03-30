@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "ui-utils-addon",
+  "version": "${version}",
+  "name": "UI-Utils Addon",
+  "description": "UI-Utils standalone addon.",
+  "authors": [
+    "_PIGY_"
+  ],
+  "contact": {
+    "repo": "https://github.com/PIGY999/Ui-Utils-Meteor-Addon"
+  },
+  "icon": "assets/ui_utils_addon/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.example.addon.UIUtils"
+
+    ]
+  },
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "mixins": [
+    "ui-utils-addon.mixins.json"
+  ],
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}"],
+    "meteor-client": "*"
+  }
+}
